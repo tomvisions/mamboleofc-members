@@ -1,0 +1,164 @@
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+
+    <!-- Header -->
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+    <!-- Loader -->
+    <div
+        class="absolute inset-x-0 bottom-0"
+        *ngIf="isLoading">
+        <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+    </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Teams</div>
+
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+
+            <!-- Add product button -->
+            <button
+                class="ml-4"
+                mat-flat-button
+                (click)="createEvent()">
+                <span class="ml-2 mr-1">Add new Team</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+        <!-- Products gallery -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container *ngIf="(events$ | async) as teams">
+                <ng-container *ngIf="teams.length > 0; else null">
+                    <div class="grid">
+                        <!-- Header -->
+                        <div
+                            class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
+                            <div [mat-sort-header]="'name'">Name</div>
+                            <div
+                                class=""
+                                [mat-sort-header]="'info'">
+                                Info
+                            </div>
+                        </div>
+                        <!-- Rows -->
+                        <ng-container *ngIf="(events$ | async) as teams">
+                            <ng-container *ngFor="let team of teams; trackBy: trackByFn">
+                                <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                    <!-- Name -->
+                                    <div class="truncate">
+                                        {{team.name}}
+                                    </div>
+
+                                    <!-- Details button -->
+                                    <div>
+                                        <button
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                            mat-stroked-button
+                                            (click)="showStatus(team.id)">
+                                            <mat-icon
+                                                class="icon-size-5"
+                                                [svgIcon]="selectedTeam?.id === team.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="grid">
+                                    <ng-container *ngIf="selectedTeam?.id === team.id">
+                                        <ng-container *ngTemplateOutlet="rowStatusTemplate; context: {$implicit: team}"></ng-container>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+
+                    <mat-paginator
+                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                        [ngClass]="{'pointer-events-none': isLoading}"
+                        [length]="pagination.length"
+                        [pageIndex]="pagination.page"
+                        [pageSize]="pagination.size"
+                        [pageSizeOptions]="[5, 10, 25, 100]"
+                        [showFirstLastButtons]="true"></mat-paginator>
+
+                </ng-container>
+            </ng-container>
+
+            <ng-template
+                #rowStatusTemplate
+                let-team>
+                <div class="shadow-lg overflow-hidden">
+                    <div class="flex border-b">
+                        <!-- Selected product form -->
+                        <form
+                            class="flex flex-col w-full"
+                            [formGroup]="selectedTeamForm">
+
+                            <div class="flex flex-col sm:flex-row p-8">
+
+                                <div class="flex flex-auto flex-wrap">
+                                    <!-- Name, SKU & etc. -->
+                                    <div class="flex flex-col w-full lg:w-4/4 sm:pl-8">
+
+                                        <!-- Name -->
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Name</mat-label>
+                                            <input
+                                                matInput
+                                                [formControlName]="'name'">
+                                        </mat-form-field>
+
+                                        <!-- SKU and Barcode -->
+                                        <div class="flex">
+                                            <mat-form-field class="w-full">
+                                                <mat-label>Description</mat-label>
+                                                <input
+                                                    matInput
+                                                    [formControlName]="'description'">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                                <button
+                                    class="-ml-4"
+                                    mat-button
+                                    [color]="'warn'"
+                                    (click)="deleteSelectedProduct()">
+                                    Delete
+                                </button>
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex items-center mr-4"
+                                        *ngIf="flashMessage">
+                                        <ng-container *ngIf="flashMessage === 'success'">
+                                            <mat-icon
+                                                class="text-green-500"
+                                                [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                            <span class="ml-2">Product updated</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="flashMessage === 'error'">
+                                            <mat-icon
+                                                class="text-red-500"
+                                                [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                                            <span class="ml-2">An error occurred, try again!</span>
+                                        </ng-container>
+                                    </div>
+                                    <button
+                                        mat-flat-button
+                                        [color]="'primary'"
+                                        (click)="updateSelectedEvent()">
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </ng-template>
+
+</div>

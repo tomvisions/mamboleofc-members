@@ -1,0 +1,303 @@
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+
+    <!-- Header -->
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <div
+            class="absolute inset-x-0 bottom-0"
+            *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">User List</div>
+
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+
+        <!-- Products gallery -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container *ngIf="(users$ | async) as users">
+                <ng-container *ngIf="users.length > 0; else noUsers">
+                    <div class="grid">
+                        <!-- Header -->
+                        <div
+                            class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
+                            <div [mat-sort-header]="'name'">Name</div>
+                            <div
+                                class=""
+                                [mat-sort-header]="'info'">
+                                Info
+                            </div>
+                        </div>
+                        <!-- Rows -->
+                        <ng-container *ngIf="(users$ | async) as users">
+                            <ng-container *ngFor="let user of users; trackBy: trackByFn">
+                                <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                    <!-- Name -->
+                                    <div class="truncate">
+                                        {{user.username}}
+                                    </div>
+
+                                    <!-- Details button -->
+                                    <div>
+                                        <button
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                            mat-stroked-button
+                                            (click)="showStatus(user.id)">
+                                            <mat-icon
+                                                class="icon-size-5"
+                                                [svgIcon]="selectedUser?.id === user.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="grid">
+                                    <ng-container *ngIf="selectedUser?.id === user.id">
+                                        <ng-container *ngTemplateOutlet="rowStatusTemplate; context: {$implicit: user}"></ng-container>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+
+                    <mat-paginator
+                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                        [ngClass]="{'pointer-events-none': isLoading}"
+                        [length]="pagination.length"
+                        [pageIndex]="pagination.page"
+                        [pageSize]="pagination.size"
+                        [pageSizeOptions]="[5, 10, 25, 100]"
+                        [showFirstLastButtons]="true"></mat-paginator>
+
+                </ng-container>
+            </ng-container>
+
+            <ng-template
+                #rowStatusTemplate
+                let-user>
+
+                <ng-container *ngIf="avatarImage; else elseAvatar">
+                <style type="text/css">
+                    .bg-black {
+                        /*background:  url({{avatarImage}})) no-repeat; */
+                    }
+                </style>
+                </ng-container>
+               <ng-template #elseAvatar>
+                   <style type="text/css">
+                       .bg-black {
+                    /*       background: url("https://via.placeholder.com/130.jpg") no-repeat; */
+                       }
+                   </style>
+               </ng-template>
+                <div class="shadow-lg overflow-hidden">
+                    <div class="flex border-b">
+                        <!-- Selected product form -->
+                        <form
+                            class="flex flex-col w-full"
+                            [formGroup]="selectedUserForm">
+
+                            <div class="flex flex-col sm:flex-row p-8">
+                                <div class="relative flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
+                                    <!-- Upload / Remove avatar -->
+                                    <div id="avatar" class="absolute inset-0 bg-black bg-opacity-50 z-10" *ngIf = "this.avatar !== '' else defaultImage" >
+                                        <img [src]="avatar">
+                                    </div>
+                                    <ng-template #defaultImage>
+                                        <img src="https://via.placeholder.com/130.jpg">
+
+                                    </ng-template>
+                                    <div class="absolute inset-0 flex items-center justify-center z-20">
+
+
+                                        <div>
+                                            <!--
+                                            <input
+                                                    id="avatar-file-input"
+                                                    class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
+                                                    type="file"
+                                                    [multiple]="false"
+                                                    [accept]="'image/jpeg, image/png'"
+                                                    (change)="uploadAvatar(avatarFileInput.files, user.id)"
+                                                    #avatarFileInput>
+                                                    -->
+
+
+                                            <input
+                                                    id="avatar-file"
+                                                    type="hidden"
+                                                    [formControlName]="'avatar'"
+                                                    >
+
+                                            <input
+                                                    id="avatar-file-input"
+                                                    class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
+                                                    type="file"
+                                                    [multiple]="false"
+                                                    [accept]="'image/jpeg, image/png'"
+                                                    (change)="fileChangeEvent($event)"
+                                                    #avatarFileInput>
+                                            <label
+                                                    class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-hover"
+                                                    for="avatar-file-input"
+                                                    matRipple>
+                                                <mat-icon
+                                                        class="text-white"
+                                                        [svgIcon]="'heroicons_outline:camera'"></mat-icon>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <button
+                                                    mat-icon-button
+                                                    (click)="removeAvatar()">
+                                                <mat-icon
+                                                        class="text-white"
+                                                        [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                            </button>
+                                        </div>
+
+                                   </div>
+                                </div>
+
+                                <!-- Product images and gallery
+                                <div class="flex flex-col items-center sm:items-start mb-8 sm:mb-0">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-32 h-44 border rounded overflow-hidden">
+                                            <ng-container *ngIf="selectedUserForm.get('picture') else noImage">
+                                                <img
+                                                    class="w-full h-full object-cover"
+                                                    [src]="selectedUserForm.get('picture')">
+                                            </ng-container>
+                                            <ng-template #noImage>
+                                                <span class="flex items-center min-h-20 text-lg font-semibold">NO IMAGE</span>
+                                            </ng-template>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col mt-8">
+                                        <button type="button" mat-raised-button  [formControlName]="'picture'" [color]="'primary'" (click)="fileInput.click()">Choose Picture</button>
+                                        <input hidden (change)="onFileSelected($event)" #fileInput type="file">
+                                        <span class="file-name">{{selectedFile?.name}}</span>
+                                    </div>
+                                </div>
+-->
+                                <div class="flex flex-auto flex-wrap">
+                                    <!-- Name, SKU & etc. -->
+                                    <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+
+                                        <!-- Name -->
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Name</mat-label>
+                                            <input
+                                                matInput
+                                                [formControlName]="'username'">
+                                        </mat-form-field>
+                                    </div>
+                                    <!-- Cost, Base price, Tax & Price -->
+                                    <div class="flex flex-col w-full lg:w-1/4 sm:pl-8">
+                                        <!-- Name -->
+                                        <mat-form-field class="w-full">
+                                            <mat-label>Number</mat-label>
+                                            <input
+                                                    matInput
+                                                    [formControlName]="'number'">
+                                        </mat-form-field>
+                                    </div>
+
+
+                                    <!-- Weight & Tags -->
+                                    <div class="flex flex-col w-full lg:w-1/4 sm:pl-8">
+
+                                        <!-- Tags -->
+                                        <span class="mb-px font-medium leading-tight">Team</span>
+                                        <div class="mt-1.5 rounded-md border border-gray-300 dark:border-gray-500 shadow-sm overflow-hidden">
+                                            <!-- Header -->
+                                            <div class="flex items-center -my-px py-2 px-3">
+                                                <div class="flex items-center flex-auto min-w-0">
+                                                    <mat-icon
+                                                        class="icon-size-5"
+                                                        [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                                                    <input
+                                                        class="min-w-0 ml-2 py-1 border-0"
+                                                        type="text"
+                                                        placeholder="Enter team name"
+                                                        (input)="filterTeams($event)"
+                                                        (keydown)="filterTagsInputKeyDown($event)"
+                                                        [maxLength]="50"
+                                                        #newTagInput>
+                                                </div>
+                                            </div>
+                                            <!-- Available Teams -->
+                                            <div class="h-44 leading-none overflow-y-auto border-t border-gray-300 dark:border-gray-500">
+                                                <!-- Tags -->
+                                                <ng-container *ngIf="!tagsEditMode">
+                                                    <ng-container *ngFor="let team of filteredTeams; trackBy: trackByFn">
+                                                        <mat-checkbox
+                                                            class="flex items-center h-10 min-h-10 px-4"
+                                                            [color]="'primary'"
+                                                            [checked]="selectedUser.teams.includes(team.id)"
+                                                            (change)="toggleUserTeam(team, $event)">
+                                                            {{team.name}}
+                                                        </mat-checkbox>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                                <button
+                                    class="-ml-4"
+                                    mat-button
+                                    [color]="'warn'"
+                                    (click)="deleteSelectedUser()">
+                                    Delete
+                                </button>
+                                <div class="flex items-center">
+                                    <div
+                                        class="flex items-center mr-4"
+                                        *ngIf="flashMessage">
+                                        <ng-container *ngIf="flashMessage === 'success'">
+                                            <mat-icon
+                                                class="text-green-500"
+                                                [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                            <span class="ml-2">Product updated</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="flashMessage === 'error'">
+                                            <mat-icon
+                                                class="text-red-500"
+                                                [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                                            <span class="ml-2">An error occurred, try again!</span>
+                                        </ng-container>
+                                    </div>
+                                    <button
+                                        mat-flat-button
+                                        [color]="'primary'"
+                                        (click)="updateSelectedUser()">
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </ng-template>
+
+
+            <ng-template #noUsers>
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no users!</div>
+            </ng-template>
+
+        </div>
+
+    </div>
+
+</div>

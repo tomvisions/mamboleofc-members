@@ -1,0 +1,151 @@
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+
+    <!-- Header -->
+    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <div
+            class="absolute inset-x-0 bottom-0"
+            *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Rosters</div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+
+        <!-- Products gallery -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <ng-container *ngIf="(games$ | async) as games">
+                <ng-container *ngIf="games.length > 0; else noGames">
+                    <div class="grid">
+                        <!-- Header -->
+                        <div
+                            class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5"
+                            matSort
+                            matSortDisableClear>
+                            <div [mat-sort-header]="'name'">Name</div>
+                            <div
+                                class=""
+                                [mat-sort-header]="'status'">
+                                Status
+                            </div>
+                        </div>
+                        <!-- Rows -->
+                        <ng-container *ngIf="(games$ | async) as games">
+                            <ng-container *ngFor="let game of games; trackBy: trackByFn">
+                                <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+                                    <!-- Name -->
+                                    <div class="">
+                                        {{game.name}}
+                                    </div>
+
+                                    <!-- Details button -->
+                                    <div>
+                                        <button
+                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                            mat-stroked-button
+                                            (click)="showStatus(game.id)">
+                                            <mat-icon
+                                                class="icon-size-5"
+                                                [svgIcon]="selectedGame?.id === game.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="grid">
+                                    <ng-container *ngIf="selectedGame?.id === game.id">
+                                        <ng-container *ngTemplateOutlet="rowStatusTemplate; context: {$implicit: game}"></ng-container>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+
+                    <mat-paginator
+                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                        [ngClass]="{'pointer-events-none': isLoading}"
+                        [length]="pagination.length"
+                        [pageIndex]="pagination.page"
+                        [pageSize]="pagination.size"
+                        [pageSizeOptions]="[5, 10, 25, 100]"
+                        [showFirstLastButtons]="true"></mat-paginator>
+
+                </ng-container>
+            </ng-container>
+
+            <ng-template
+                #rowStatusTemplate
+                let-product>
+                <div class="shadow-lg overflow-hidden">
+                    <div class="flex border-b">
+                        <!-- Selected product form -->
+                        <form
+                            class="flex flex-col w-full"
+                            [formGroup]="selectedRosterForm">
+
+                            <!-- Team members -->
+                            <div class="flex flex-col mt-8 divide-y border-t border-b">
+                                <ng-container *ngIf="(roster$ | async) as rosters">
+                                <ng-container *ngFor="let roster of rosters; trackBy: trackByFn;">
+                                    <div class="flex flex-col sm:flex-row sm:items-center py-6">
+                                        <div class="flex items-center">
+                                            <div class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
+                                                <ng-container *ngIf="member.avatar">
+                                                    <img
+                                                            class="object-cover w-full h-full"
+                                                            [src]="member.avatar"
+                                                            alt="Contact avatar"/>
+                                                </ng-container>
+                                                <ng-container *ngIf="!member.avatar">
+                                                    <div class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                                        {{member.name.charAt(0)}}
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="font-medium">{{member.name}}</div>
+                                                <div class="text-secondary">{{member.email}}</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center mt-4 sm:mt-0 sm:ml-auto">
+                                            <div class="order-1 sm:order-2 sm:ml-3">
+                                                <button mat-icon-button>
+                                                    <mat-icon
+                                                            class="text-hint"
+                                                            [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                </ng-container>
+                                <!-- Actions -->
+                                <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+
+                                    <!-- Add product button -->
+                                    <button
+                                            class="ml-4"
+                                            mat-flat-button
+                                            [color]="'primary'"
+                                    >
+                                        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                                        <span class="ml-2 mr-1" (click)="updateRoster(rosterId, gameId)">Add Yourself to Roster</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </ng-template>
+
+
+            <ng-template #noGames>
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no games!</div>
+            </ng-template>
+
+        </div>
+
+    </div>
+
+</div>
