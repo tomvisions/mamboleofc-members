@@ -21,7 +21,7 @@ phases:
       - cp robots.txt ./dist && cp sitemap.xml ./dist
   post_build:
     commands:
-      - aws s3 rm s3://www.mamboleofc.ca --recursive --quiet
+      - aws s3 rm s3://members.mamboleofc.ca --recursive --quiet
 
 artifacts:
   files:
