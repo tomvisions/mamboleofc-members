@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - git config --global credential.helper '!aws --region us-east-1 codecommit credential-helper $@'
+      - git config --global credential.UseHttpPath true
+  pre_build:
+    commands:
+      - npm --version
+      - echo Installing Angular CLI
+      - npm install --location=global @angular/cli
+      - ng version
+      - echo Installing Node Dependencies
+      - npm install
+      - npm install --save @angular/material @angular/cdk
+  #      - npm install --save @angular/material @angular/cdk fs path ok
+  build:
+    commands:
+      - ng build --configuration=stage
+  post_build:
+    commands:
+      - aws s3 rm s3://stage.mamboleofc.ca --recursive --quiet
+artifacts:
+  files:
+    - '**/*'
+  base-directory: 'dist'
+  discard-paths: no

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, AfterContentInit,  ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatPaginator } from '@angular/material/paginator';
@@ -6,14 +6,18 @@ import { MatSort } from '@angular/material/sort';
 import { debounceTime, map, merge, Observable, Subject, switchMap, takeUntil } from 'rxjs';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import {EditorModule} from "@tinymce/tinymce-angular";
+import {ImageService} from "../../../../image.service";
+
 import {
     Event,
     EventPagination
 } from 'app/modules/admin/event/event.types';
 import { EventService } from 'app/modules/admin/event/event.service';
+import * as _ from "lodash";
 
 @Component({
-    selector       : 'team-gallery',
+    selector       : 'event-gallery',
     templateUrl    : './info.component.html',
     styles         : [
         /* language=SCSS */
@@ -30,7 +34,7 @@ import { EventService } from 'app/modules/admin/event/event.service';
                 }
 
                 @screen lg {
-                    grid-template-columns: 48px 112px auto 112px 96px 96px 72px;
+                    grid-template-columns: 400px auto;
                 }
             }
         `
@@ -39,7 +43,7 @@ import { EventService } from 'app/modules/admin/event/event.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations     : fuseAnimations
 })
-export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
+export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
 {
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
@@ -51,10 +55,27 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
     pagination: EventPagination;
     searchInputControl: FormControl = new FormControl();
     selectedProductForm: FormGroup;
-    selectedTeam: Event | null = null;
-    selectedTeamForm: FormGroup;
+    selectedEvent: Event | null = null;
+    selectedEventForm: FormGroup;
     tagsEditMode: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    bannerImage;
+    aboutImage;
+    contentImage;
+    imageError: string;
+    isImageSaved: boolean = false;
+    cardImageBase64: string;
+    g
+
+    quillModules: any = {
+        toolbar: [
+            ['bold', 'italic', 'underline',  'strike','link'], ['blockquote', 'code-block'],
+            [{align: []}, {list: 'ordered'}, {list: 'bullet'}],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            [{ 'font': [] }],
+            ['clean']
+        ]
+    };
 
     /**
      * Constructor
@@ -63,7 +84,8 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseConfirmationService: FuseConfirmationService,
         private _formBuilder: FormBuilder,
-        private _eventService: EventService
+        private _eventService: EventService,
+        private _imageService: ImageService
     )
     {
     }
@@ -78,7 +100,7 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
     ngOnInit(): void
     {
         // Create the selected product form
-        this.selectedProductForm = this._formBuilder.group({
+/*        this.selectedEventForm = this._formBuilder.group({
             id               : [''],
             category         : [''],
             name             : ['', [Validators.required]],
@@ -99,13 +121,23 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
             images           : [[]],
             currentImageIndex: [0], // Image index that is currently being viewed
             active           : [false]
-        });
+        }); */
 
         // Create the selected product form
-        this.selectedTeamForm = this._formBuilder.group({
+        this.selectedEventForm = this._formBuilder.group({
             id               : [''],
             name             : ['', [Validators.required]],
-            description      : [''],
+            content          : [''],
+            slug             : [''],
+            date             : [''],
+            image            : [''],
+            about            : [''],
+            aboutImage       : [''],
+            bannerImage      : [''],
+            contentImage      : [''],
+            link             : [''],
+            linkImage        : [''],
+            identifier       : ['']
         });
 
         // Get the pagination
@@ -121,7 +153,7 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
             });
 
         // Get the teams
-        console.log('the teams');
+        console.log('the events');
         console.log(this._eventService.events$);
         this.events$ = this._eventService.events$;
         // Subscribe to search input field value changes
@@ -144,7 +176,7 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
     /**
      * After view init
      */
-    ngAfterViewInit(): void
+    ngAfterContentInit(): void
     {
         if ( this._sort && this._paginator )
         {
@@ -181,6 +213,7 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
                 })
             ).subscribe();
         }
+
     }
 
     /**
@@ -205,7 +238,7 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
     showStatus(eventId: string): void
     {
         // If the product is already selected...
-        if ( this.selectedTeam && this.selectedTeam.id === eventId )
+        if ( this.selectedEvent && this.selectedEvent.id === eventId )
         {
             // Close the details
             this.closeDetails();
@@ -214,13 +247,35 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
 
         // Get the product by id
         this._eventService.getEventId(eventId)
-            .subscribe((team) => {
-
+            .subscribe((event) => {
+                console.log('event');
+                console.log(event);
                 // Set the selected product
-                this.selectedTeam = team;
+                this.selectedEvent = event;
+                console.log('current event');
+                if (event.bannerImage) {
+                    this.bannerImage = this._imageService.loadImage240x128(event.bannerImage);
+                    console.log('the banner image');
+                    console.log(this.bannerImage);
+                //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
+                }
+
+                if (event.aboutImage) {
+                    this.aboutImage = this._imageService.loadImage240x128(event.aboutImage);
+                    console.log('the about image');
+                    console.log(this.aboutImage);
+                    //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
+                }
+
+                if (event.contentImage) {
+                    this.contentImage = this._imageService.loadImage240x128(event.contentImage);
+                    console.log('the content image');
+                    console.log(this.contentImage);
+                    //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
+                }
 
                 // Fill the form
-                this.selectedTeamForm.patchValue(team);
+                this.selectedEventForm.patchValue(event);
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
@@ -232,7 +287,7 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
      */
     closeDetails(): void
     {
-        this.selectedTeam = null;
+        this.selectedEvent = null;
     }
 
     /**
@@ -241,8 +296,8 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
     cycleImages(forward: boolean = true): void
     {
         // Get the image count and current image index
-        const count = this.selectedProductForm.get('images').value.length;
-        const currentIndex = this.selectedProductForm.get('currentImageIndex').value;
+        const count = this.selectedEventForm.get('images').value.length;
+        const currentIndex = this.selectedEventForm.get('currentImageIndex').value;
 
         // Calculate the next and previous index
         const nextIndex = currentIndex + 1 === count ? 0 : currentIndex + 1;
@@ -260,6 +315,77 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
         }
     }
 
+
+    fileChangeEvent(fileInput: any, field) {
+        this.imageError = null;
+        //    console.log(fileInput);
+        //  console.log('fileInput');
+
+        if (fileInput.target.files && fileInput.target.files[0]) {
+            // Size Filter Bytes
+            const max_size = 20971520;
+            const allowed_types = ['image/png', 'image/jpeg'];
+            const max_height = 15200;
+            const max_width = 25600;
+
+            if (fileInput.target.files[0].size > max_size) {
+                this.imageError =
+                    'Maximum size allowed is ' + max_size / 1000 + 'Mb';
+
+                return false;
+            }
+
+            if (!_.includes(allowed_types, fileInput.target.files[0].type)) {
+                this.imageError = 'Only Images are allowed ( JPG | PNG )';
+                return false;
+            }
+            const reader = new FileReader();
+
+            reader.onload = (e: any) => {
+                const image = new Image();
+                image.src = e.target.result;
+                image.onload = rs => {
+                    const img_height = rs.currentTarget['height'];
+                    const img_width = rs.currentTarget['width'];
+
+                    //  console.log(img_height, img_width);
+
+
+                    if (img_height > max_height && img_width > max_width) {
+                        this.imageError =
+                            'Maximum dimentions allowed ' +
+                            max_height +
+                            '*' +
+                            max_width +
+                            'px';
+                        return false;
+                    } else {
+                        const imgBase64Path = e.target.result;
+                        this.cardImageBase64 = e.target.result;
+                        this.isImageSaved = true;
+                        // this.previewImagePath = imgBase64Path;
+                    }
+                };
+                this.bannerImage  = reader.result;
+
+                console.log('the form');
+                console.log(this.selectedEventForm);
+                console.log(JSON.parse(`{"${field}":"${reader.result}"}`));
+                this.selectedEventForm.patchValue(JSON.parse(`{"${field}":"${reader.result}"}`));
+                this.selectedEventForm.get(field).updateValueAndValidity();
+                /*
+                  if (result.replace('image/png', '')) {
+
+                  } */
+                //    document.getElementById('avatar').setAttribute('style', `background: url('${reader.result}') no-repeat;`);
+                //  document.getElementById('avatar-file-input').setAttribute('value', JSON.stringify(reader.result));
+            };
+
+            reader.readAsDataURL(fileInput.target.files[0]);
+        }
+    }
+
+
     /**
      * Toggle the tags edit mode
      */
@@ -274,13 +400,13 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
     createEvent(): void
     {
         // Create the product
-        this._eventService.createEvent().subscribe((newTeam) => {
+        this._eventService.createEvent().subscribe((newEvent) => {
 
             // Go to new product
-            this.selectedTeam = newTeam;
+            this.selectedEvent = newEvent;
 
             // Fill the form
-            this.selectedTeamForm.patchValue(newTeam);
+            this.selectedEventForm.patchValue(newEvent);
 
             // Mark for check
             this._changeDetectorRef.markForCheck();
@@ -293,13 +419,13 @@ export class InfoComponent implements OnInit, AfterViewInit, OnDestroy
     updateSelectedEvent(): void
     {
         // Get the product object
-        const product = this.selectedTeamForm.getRawValue();
+        const event = this.selectedEventForm.getRawValue();
 
         // Remove the currentImageIndex field
-        delete product.currentImageIndex;
+        delete event.currentImageIndex;
 
         // Update the product on the server
-        this._eventService.updateEvent(product.id, product).subscribe(() => {
+        this._eventService.updateEvent(event.identifier, event).subscribe(() => {
 
             // Show a success message
             this.showFlashMessage('success');

@@ -17,6 +17,8 @@ import { SharedModule } from 'app/shared/shared.module';
 import { InfoComponent } from 'app/modules/admin/event/info/info.component';
 import { eventRoutes } from 'app/modules/admin/event/event.routing';
 import {EventComponent} from "./event.component";
+import { QuillModule } from 'ngx-quill';
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 @NgModule({
     declarations: [
@@ -35,10 +37,12 @@ import {EventComponent} from "./event.component";
         MatProgressBarModule,
         MatRippleModule,
         MatSortModule,
+        QuillModule.forRoot(),
         MatSelectModule,
         MatSlideToggleModule,
         MatTooltipModule,
-        SharedModule
+        SharedModule,
+        EditorModule
     ]
 })
 export class EventModule

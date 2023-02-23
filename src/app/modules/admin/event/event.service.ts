@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { BehaviorSubject, filter, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import {InventoryPagination, Event, EventPagination } from 'app/modules/admin/event/event.types';
+import {SharedModule} from "../../../shared/shared.module";
 
 @Injectable({
     providedIn: 'root'
@@ -15,7 +16,7 @@ export class EventService
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient)
+    constructor(private _httpClient: HttpClient, private _sharedModule: SharedModule)
     {
     }
 
@@ -91,7 +92,7 @@ export class EventService
     getEvents(page: number = 0, size: number = 10, sort: string = 'name', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<{ pagination: EventPagination; events: Event[] }>
     {
-        return this._httpClient.get<{ pagination: EventPagination; events: Event[] }>('http://localhost:3001/api/v1/event', {
+        return this._httpClient.get<{ pagination: EventPagination; events: Event[] }>(`${this._sharedModule.apiLocation}/api/v1/event`, {
             params: {
                 page: '' + page,
                 size: '' + size,
@@ -114,37 +115,44 @@ export class EventService
     {
         return this.events$.pipe(
             take(1),
-            switchMap(teams => this._httpClient.post<Event>('http://localhost:3001/api/v1/event', {}).pipe(
-                map((newTeam) => {
+            switchMap(events => this._httpClient.post<Event>(`${this._sharedModule.apiLocation}/api/v1/event`, {
+                "new": true
+            }).pipe(
+                map((newEvent) => {
 
                     // Update the products with the new product
-                    this._events.next([newTeam, ...teams]);
+                    this._events.next([newEvent, ...events]);
 
                     // Return the new product
-                    return newTeam;
+                    return newEvent;
                 })
             ))
         );
     }
 
     /**
-     * Update product
+     * Update Event
      *
-     * @param id
-     * @param team
+     * @param identifier
+     * @param event
      */
-    updateEvent(id: string, team: Event): Observable<Event>
+    updateEvent(identifier: string, event: Event): Observable<Event>
     {
+        console.log('event');
+        console.log({
+            identifier,
+            event
+        });
         return this.events$.pipe(
             take(1),
-            switchMap(events => this._httpClient.patch<Event>('api/apps/ecommerce/inventory/product', {
-                id,
-                team
+            switchMap(events => this._httpClient.patch<Event>(`${this._sharedModule.apiLocation}/api/v1/event`, {
+                identifier,
+                event
             }).pipe(
                 map((updatedTeam) => {
 
                     // Find the index of the updated product
-                    const index = events.findIndex(item => item.id === id);
+                    const index = events.findIndex(item => item.identifier === identifier);
 
                     // Update the product
                     events[index] = updatedTeam;
@@ -157,7 +165,7 @@ export class EventService
                 }),
                 switchMap(updatedTeam => this.event$.pipe(
                     take(1),
-                    filter(item => item && item.id === id),
+                    filter(item => item && item.identifier === identifier),
                     tap(() => {
 
                         // Update the product if it's selected

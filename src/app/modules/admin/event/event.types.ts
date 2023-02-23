@@ -31,7 +31,8 @@ export interface Event
     image: string;
     link: string;
     about: string;
-    linkImage: string;
+    identifier: string;
+    contentImage: string;
     aboutImage: string;
     bannerImage: string;
     createdAt: Date;

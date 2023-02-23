@@ -23,12 +23,6 @@ export class AuthService
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
 
-
-    get currentUser(): string
-    {
-        return localStorage.getItem('currentUser') ?? '';
-    }
-
     /**
      * Setter & getter for access token
      */
@@ -41,6 +35,13 @@ export class AuthService
     {
         return localStorage.getItem('accessToken') ?? '';
     }
+
+    get currentUser(): string
+    {
+        return localStorage.getItem('currentUser') ?? '';
+    }
+
+
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -90,7 +91,6 @@ export class AuthService
 
                 // Store the user on the user service
                 this._userService.user = response.user;
-                localStorage.setItem('currentUser', JSON.stringify(response.user));
 
                 // Return a new observable with the response
                 return of(response);
