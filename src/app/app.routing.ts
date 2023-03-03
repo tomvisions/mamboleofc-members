@@ -78,6 +78,7 @@ export const appRoutes: Route[] = [
             {path: 'game', loadChildren: () => import('app/modules/admin/game/game.module').then(m => m.GameModule)},
             {path: 'gallery', loadChildren: () => import('app/modules/admin/media/media.module').then(m => m.MediaModule)},
             {path: 'event', loadChildren: () => import('app/modules/admin/event/event.module').then(m => m.EventModule)},
+            {path: 'page', loadChildren: () => import('app/modules/admin/page/page.module').then(m => m.PageModule)},
         ]
     }
 ];
