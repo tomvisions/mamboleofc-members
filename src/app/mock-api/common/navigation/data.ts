@@ -38,12 +38,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link : '/gallery'
     },
     {
-        id   : 'events',
-        title: 'Events',
+        id   : 'event',
+        title: 'Event',
         type : 'basic',
         icon : 'heroicons_outline:chart-pie',
-        link : '/events'
-    }
+        link : '/event',
+    },
+    {
+        id   : 'page',
+        title: 'Pages',
+        type : 'basic',
+        icon : 'heroicons_outline:chart-pie',
+        subtitle: 'Unique dashboard designs',
+        link : '/page',
+    },
 
 ];
 export const compactNavigation: FuseNavigationItem[] = [
