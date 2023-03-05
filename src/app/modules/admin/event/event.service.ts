@@ -92,6 +92,8 @@ export class EventService
     getEvents(page: number = 0, size: number = 10, sort: string = 'identifier', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<{ pagination: EventPagination; events: Event[] }>
     {
+        console.log('the url');
+        console.log(`${this._sharedModule.apiLocation}/api/v1/event`);
         return this._httpClient.get<{ pagination: EventPagination; events: Event[] }>(`${this._sharedModule.apiLocation}/api/v1/event`, {
             params: {
                 page: '' + page,
