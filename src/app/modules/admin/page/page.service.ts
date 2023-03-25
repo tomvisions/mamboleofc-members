@@ -52,14 +52,14 @@ export class PageService
     /**
      * Get product by id
      */
-    getPageId(id: string): Observable<Page>
+    getPageId(identifier: string): Observable<Page>
     {
         return this._pages.pipe(
             take(1),
             map((pages) => {
 
                 // Find the product
-                const page = pages.find(item => item.id === id) || null;
+                const page = pages.find(item => item.identifier === identifier) || null;
 
                 // Update the product
                 this._page.next(page);
@@ -71,7 +71,7 @@ export class PageService
 
                 if ( !page )
                 {
-                    return throwError('Could not found product with id of ' + id + '!');
+                    return throwError('Could not found product with id of ' + identifier + '!');
                 }
 
                 return of(page);
@@ -140,7 +140,7 @@ export class PageService
      */
     updatePage(identifier: string, page: Page): Observable<Page>
     {
-        console.log('event');
+        console.log('page');
         console.log({
             identifier,
             page

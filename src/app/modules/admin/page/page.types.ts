@@ -24,19 +24,17 @@ export interface InventoryProduct
 export interface Page
 {
     id: string;
-    name: string;
-    content: string;
+    title: string;
+    content: {
+        content:string
+        image: string
+    }[];
     slug: string;
     date: Date;
     image: string;
     link: string;
     about: string;
     identifier: string;
-    contentImage: string;
-    aboutImage: string;
-    bannerImage: string;
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 export interface TeamUser

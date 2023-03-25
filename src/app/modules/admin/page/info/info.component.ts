@@ -64,12 +64,13 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     tagsEditMode: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     bannerImage;
+    imageArray;
     aboutImage;
     contentImage;
     imageError: string;
     isImageSaved: boolean = false;
     cardImageBase64: string;
-    g
+
 
     quillModules: any = {
         toolbar: [
@@ -125,22 +126,14 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
             images           : [[]],
             currentImageIndex: [0], // Image index that is currently being viewed
             active           : [false]
-        });
+        }); */
 
         // Create the selected product form
         this.pageForm = this._formBuilder.group({
             title             : [''],
-            content          : [''],
-            slug             : [''],
-            date             : [''],
-            phoneNumbers: this._formBuilder.array([]),
-            image            : [''],
-            about            : [''],
-            aboutImage       : [''],
-            bannerImage      : [''],
-            contentImage      : [''],
-            link             : [''],
-            linkImage        : [''],
+            bannerImage       : [''],
+            slug              : [''],
+            content          : this._formBuilder.array([]),
             identifier       : ['']
         });
 
@@ -152,16 +145,19 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
                 // Update the pagination
                 this.pagination = pagination;
 
+                (this.pageForm.get('content') as UntypedFormArray).clear();
+
+
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
 
         // Get the teams
-        console.log('the events');
-        console.log(this._pageService.pages$);
+     ////   console.log('the page');
+      //  console.log(this._pageService.pages$);
         this.pages$ = this._pageService.pages$;
         // Subscribe to search input field value changes
-        this.searchInputControl.valueChanges
+   /*     this.searchInputControl.valueChanges
             .pipe(
                 takeUntil(this._unsubscribeAll),
                 debounceTime(300),
@@ -224,18 +220,18 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
      * Add an empty phone number field
      */
     addContentAndImage(): void
-    { /*
+    {
         // Create an empty phone number form group
         const phoneNumberFormGroup = this._formBuilder.group({
-            content    : ['us'],
-            image:        [''],
+            content    : [''],
+            image      : ['']
         });
 
         // Add the phone number form group to the phoneNumbers form array
-        (this.contactForm.get('phoneNumbers') as UntypedFormArray).push(phoneNumberFormGroup);
+        (this.pageForm.get('content') as UntypedFormArray).push(phoneNumberFormGroup);
 
         // Mark for check
-        this._changeDetectorRef.markForCheck(); */
+        this._changeDetectorRef.markForCheck();
     }
 
     /**
@@ -258,24 +254,23 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
      * @param pageId
      */
     showStatus(pageId: string): void
-    { /*
+    {
         // If the product is already selected...
-        if ( this.selectedPage && this.selectedPage.id === pageId )
+        if ( this.selectedPage && this.selectedPage.identifier === pageId )
         {
             // Close the details
             this.closeDetails();
             return;
         }
-
         // Get the product by id
         this._pageService.getPageId(pageId)
             .subscribe((page) => {
-                console.log('page');
-                console.log(page);
+
                 // Set the selected product
                 this.selectedPage = page;
-                console.log('current event');
-                if (page.bannerImage) {
+
+
+/*                if (page.bannerImage) {
                     this.bannerImage = this._imageService.loadImage240x128(page.bannerImage);
                     console.log('the banner image');
                     console.log(this.bannerImage);
@@ -294,14 +289,50 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
                     console.log('the content image');
                     console.log(this.contentImage);
                     //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
+                } */
+                // Fill the form
+                this.pageForm.patchValue(page);
+
+          //      page.content = JSON.parse(page['content);
+                const contentFormGroups = [];
+                // Iterate through them
+
+                if ( page.content.length > 0 ) {
+
+                    page.content.forEach((content) => {
+
+                        // Create an email form group
+                        contentFormGroups.push(
+                            this._formBuilder.group({
+                                content: [content.content],
+                                image: [content.image],
+                            })
+                        );
+                    });
+
+                } else {
+                    // Create a contact form group
+                    contentFormGroups.push(
+                        this._formBuilder.group({
+                            content: [''],
+                            image:   ['']
+                        })
+                    );
                 }
 
-                // Fill the form
-                this.selectedPageForm.patchValue(page);
+                  contentFormGroups.forEach((contentFormGroup) => {
+                    (this.pageForm.get('content') as UntypedFormArray).push(contentFormGroup);
+                    });
 
+
+  //              console.log(page);
+
+
+//                console.log('the page form');
+          //      console.log(this.pageForm.get('content')['controls'][0].get('line').value);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
-            }); */
+            });
     }
 
     /**
@@ -312,34 +343,19 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
         this.selectedPage = null;
     }
 
-    /**
-     * Cycle through images of selected product
-     */
-    cycleImages(forward: boolean = true): void
-    { /*
-        // Get the image count and current image index
-        const count = this.selectedPageForm.get('images').value.length;
-        const currentIndex = this.selectedPageForm.get('currentImageIndex').value;
-
-        // Calculate the next and previous index
-        const nextIndex = currentIndex + 1 === count ? 0 : currentIndex + 1;
-        const prevIndex = currentIndex - 1 < 0 ? count - 1 : currentIndex - 1;
-
-        // If cycling forward...
-        if ( forward )
-        {
-            this.selectedProductForm.get('currentImageIndex').setValue(nextIndex);
-        }
-        // If cycling backwards...
-        else
-        {
-            this.selectedProductForm.get('currentImageIndex').setValue(prevIndex);
-        } */
+    fileChangePage2(fileInput: any, field) {
+        console.log('the file ');
+        console.log(fileInput)
+        console.log('the value of ');
+        console.log(field);
     }
 
-
-    fileChangeEvent(fileInput: any, field) { /*
-        this.imageError = null;
+    fileChangePage(fileInput: any, field) {
+        console.log('the file input');
+        console.log(fileInput)
+        console.log('the value of this');
+        console.log(field);
+/*        this.imageError = null;
         //    console.log(fileInput);
         //  console.log('fileInput');
 
@@ -388,23 +404,23 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
                         // this.previewImagePath = imgBase64Path;
                     }
                 };
-                this.bannerImage  = reader.result;
+                this.imageArray[field]  = reader.result;
 
                 console.log('the form');
-                console.log(this.selectedPageForm);
+                console.log(this.pageForm);
                 console.log(JSON.parse(`{"${field}":"${reader.result}"}`));
-                this.selectedPageForm.patchValue(JSON.parse(`{"${field}":"${reader.result}"}`));
-                this.selectedPageForm.get(field).updateValueAndValidity();
+                this.pageForm.patchValue(JSON.parse(`{"${field}":"${reader.result}"}`));
+                this.pageForm.get(field).updateValueAndValidity();
                 /*
                   if (result.replace('image/png', '')) {
 
                   } */
                 //    document.getElementById('avatar').setAttribute('style', `background: url('${reader.result}') no-repeat;`);
                 //  document.getElementById('avatar-file-input').setAttribute('value', JSON.stringify(reader.result));
-          /* };
+          //  };
 
-            reader.readAsDataURL(fileInput.target.files[0]);
-        } */
+          //  reader.readAsDataURL(fileInput.target.files[0]);
+      //  }
     }
 
 
@@ -420,7 +436,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
      * Create product
      */
     createPage(): void
-    {/*
+    {
         // Create the product
         this._pageService.createPage().subscribe((newPage) => {
 
@@ -428,30 +444,30 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
             this.selectedPage = newPage;
 
             // Fill the form
-            this.selectedPageForm.patchValue(newPage);
+            this.pageForm.patchValue(newPage['message']);
 
             // Mark for check
             this._changeDetectorRef.markForCheck();
-        }); */
+        });
     }
 
     /**
      * Update the selected product using the form data
      */
-    updateSelectedEvent(): void
-    { /*
+    updatePage(): void
+    {
         // Get the product object
-        const event = this.selectedPageForm.getRawValue();
+        const page = this.pageForm.getRawValue();
 
         // Remove the currentImageIndex field
-        delete event.currentImageIndex;
+        delete page.currentImageIndex;
 
         // Update the product on the server
-        this._pageService.updatePage(event.identifier, event).subscribe(() => {
+        this._pageService.updatePage(page.identifier, page).subscribe(() => {
 
             // Show a success message
             this.showFlashMessage('success');
-        }); */
+        });
     }
 
     /**
@@ -472,13 +488,13 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
 
         // Subscribe to the confirmation dialog closed action
         confirmation.afterClosed().subscribe((result) => {
-/*
+
             // If the confirm button pressed...
             if ( result === 'confirmed' )
             {
 
                 // Get the product object
-                const product = this.selectedProductForm.getRawValue();
+                const product = this.pageForm.getRawValue();
 
                 // Delete the product on the server
                 this._pageService.deletePage(product.id).subscribe(() => {
@@ -486,7 +502,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
                     // Close the details
                     this.closeDetails();
                 });
-            } */
+            }
         });
     }
 

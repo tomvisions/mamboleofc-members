@@ -125,7 +125,6 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
 
         // Create the selected product form
         this.selectedEventForm = this._formBuilder.group({
-            id               : [''],
             name             : ['', [Validators.required]],
             content          : [''],
             slug             : [''],
@@ -420,7 +419,8 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     {
         // Get the product object
         const event = this.selectedEventForm.getRawValue();
-
+        console.log('event grabbed')
+        console.log(event);
         // Remove the currentImageIndex field
         delete event.currentImageIndex;
 
