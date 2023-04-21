@@ -59,7 +59,7 @@ export class EventService
             map((events) => {
 
                 // Find the product
-                const event = events.find(item => item.id === id) || null;
+                const event = events.find(item => item.identifier === id) || null;
 
                 // Update the product
                 this._event.next(event);

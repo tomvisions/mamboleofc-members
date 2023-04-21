@@ -136,7 +136,8 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
             contentImage      : [''],
             link             : [''],
             linkImage        : [''],
-            identifier       : ['']
+            identifier       : [''],
+            intro            : [''],
         });
 
         // Get the pagination
@@ -237,7 +238,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     showStatus(eventId: string): void
     {
         // If the product is already selected...
-        if ( this.selectedEvent && this.selectedEvent.id === eventId )
+        if ( this.selectedEvent && this.selectedEvent.identifier === eventId )
         {
             // Close the details
             this.closeDetails();

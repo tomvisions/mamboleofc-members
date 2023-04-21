@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <!-- Rows -->
-                        <ng-container *ngIf="(events$ | async) as teams">
+                        <ng-container *ngIf="(events$ | async) as events">
                             <ng-container *ngFor="let event of events; trackBy: trackByFn">
                                 <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
                                     <!-- Name -->
@@ -55,15 +55,15 @@
                                         <button
                                             class="min-w-10 min-h-7 h-7 px-2 leading-6"
                                             mat-stroked-button
-                                            (click)="showStatus(event.id)">
+                                            (click)="showStatus(event.identifier)">
                                             <mat-icon
                                                 class="icon-size-5"
-                                                [svgIcon]="selectedEvent?.id === event.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                                [svgIcon]="selectedEvent?.identifier === event.identifier ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="grid">
-                                    <ng-container *ngIf="selectedEvent?.id === event.id">
+                                    <ng-container *ngIf="selectedEvent?.identifier === event.identifier">
                                         <ng-container *ngTemplateOutlet="rowStatusTemplate; context: {$implicit: event}"></ng-container>
                                     </ng-container>
                                 </div>
@@ -111,6 +111,21 @@
                                                 [formControlName]="'name'">
                                         </mat-form-field>
                                         <!-- SKU and Barcode -->
+
+                                        <div class="flex">
+
+                                            <mat-label>Intro</mat-label>
+                                            <editor apiKey="cj6ml6v91591y201ycsikxncalmcr4l77ryq3mdxov7i2ywt" [formControlName]="'intro'"
+                                                    [init]="{
+                                             height: 500,
+                                             menubar: false,
+                                             toolbar:
+                                               'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help'
+                                           }"
+                                            ></editor>
+
+                                        </div>
+
 
                                         <div class="flex">
 
