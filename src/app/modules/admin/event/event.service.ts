@@ -151,19 +151,20 @@ export class EventService
                 identifier,
                 event
             }).pipe(
-                map((updatedTeam) => {
+                map((updatedEvent) => {
 
                     // Find the index of the updated product
                     const index = events.findIndex(item => item.identifier === identifier);
-
+                    console.log('event updated')
+                    console.log(updatedEvent);
                     // Update the product
-                    events[index] = updatedTeam;
+                    events[index] = updatedEvent['data'];
 
                     // Update the products
                     this._events.next(events);
 
                     // Return the updated product
-                    return updatedTeam;
+                    return updatedEvent;
                 }),
                 switchMap(updatedTeam => this.event$.pipe(
                     take(1),

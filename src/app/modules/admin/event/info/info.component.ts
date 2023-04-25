@@ -378,7 +378,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
 
                   } */
                 //    document.getElementById('avatar').setAttribute('style', `background: url('${reader.result}') no-repeat;`);
-                //  document.getElementById('avatar-file-input').setAttribute('value', JSON.stringify(reader.result));
+                //document.getElementById('avatar-file-input').setAttribute('value', JSON.stringify(reader.result));
             };
 
             reader.readAsDataURL(fileInput.target.files[0]);
