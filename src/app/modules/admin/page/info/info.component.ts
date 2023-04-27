@@ -1,13 +1,23 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, AfterContentInit,  ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    AfterContentInit,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 //import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { debounceTime, map, merge, Observable, Subject, switchMap, takeUntil } from 'rxjs';
-import { fuseAnimations } from '@fuse/animations';
-import { FuseConfirmationService } from '@fuse/services/confirmation';
+import {MatCheckboxChange} from '@angular/material/checkbox';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {debounceTime, map, merge, Observable, Subject, switchMap, takeUntil} from 'rxjs';
+import {fuseAnimations} from '@fuse/animations';
+import {FuseConfirmationService} from '@fuse/services/confirmation';
 import {EditorModule} from "@tinymce/tinymce-angular";
 import {ImageService} from "../../../../image.service";
 
@@ -15,13 +25,13 @@ import {
     Page,
     PagePagination
 } from 'app/modules/admin/page/page.types';
-import { PageService } from 'app/modules/admin/page/page.service';
+import {PageService} from 'app/modules/admin/page/page.service';
 import * as _ from "lodash";
 
 @Component({
-    selector       : 'page-gallery',
-    templateUrl    : './info.component.html',
-    styles         : [
+    selector: 'page-gallery',
+    templateUrl: './info.component.html',
+    styles: [
         /* language=SCSS */
         `
             .inventory-grid {
@@ -41,12 +51,11 @@ import * as _ from "lodash";
             }
         `
     ],
-    encapsulation  : ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    animations     : fuseAnimations
+    animations: fuseAnimations
 })
-export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
-{
+export class InfoComponent implements OnInit, AfterContentInit, OnDestroy {
     @ViewChild(MatPaginator) private _paginator: MatPaginator;
     @ViewChild(MatSort) private _sort: MatSort;
 
@@ -55,12 +64,12 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     flashMessage: 'success' | 'error' | null = null;
     isLoading: boolean = false;
     pagination: PagePagination;
-  //  searchInputControl: FormControl = new FormControl();
- //   selectedProductForm: FormGroup;
+    //  searchInputControl: FormControl = new FormControl();
+    //   selectedProductForm: FormGroup;
     selectedPage: Page | null = null;
     pageForm: UntypedFormGroup;
 
-  //  selectedPageForm: FormGroup;
+    //  selectedPageForm: FormGroup;
     tagsEditMode: boolean = false;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     bannerImage;
@@ -74,10 +83,10 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
 
     quillModules: any = {
         toolbar: [
-            ['bold', 'italic', 'underline',  'strike','link'], ['blockquote', 'code-block'],
+            ['bold', 'italic', 'underline', 'strike', 'link'], ['blockquote', 'code-block'],
             [{align: []}, {list: 'ordered'}, {list: 'bullet'}],
-            [{ 'size': ['small', false, 'large', 'huge'] }],
-            [{ 'font': [] }],
+            [{'size': ['small', false, 'large', 'huge']}],
+            [{'font': []}],
             ['clean']
         ]
     };
@@ -91,8 +100,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
         private _formBuilder: UntypedFormBuilder,
         private _pageService: PageService,
         private _imageService: ImageService
-    )
-    {
+    ) {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -102,39 +110,38 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Create the selected product form
-/*        this.selectedPageForm = this._formBuilder.group({
-            id               : [''],
-            category         : [''],
-            name             : ['', [Validators.required]],
-            description      : [''],
-            tags             : [[]],
-            sku              : [''],
-            barcode          : [''],
-            brand            : [''],
-            vendor           : [''],
-            stock            : [''],
-            reserved         : [''],
-            cost             : [''],
-            basePrice        : [''],
-            taxPercent       : [''],
-            price            : [''],
-            weight           : [''],
-            thumbnail        : [''],
-            images           : [[]],
-            currentImageIndex: [0], // Image index that is currently being viewed
-            active           : [false]
-        }); */
+        /*        this.selectedPageForm = this._formBuilder.group({
+                    id               : [''],
+                    category         : [''],
+                    name             : ['', [Validators.required]],
+                    description      : [''],
+                    tags             : [[]],
+                    sku              : [''],
+                    barcode          : [''],
+                    brand            : [''],
+                    vendor           : [''],
+                    stock            : [''],
+                    reserved         : [''],
+                    cost             : [''],
+                    basePrice        : [''],
+                    taxPercent       : [''],
+                    price            : [''],
+                    weight           : [''],
+                    thumbnail        : [''],
+                    images           : [[]],
+                    currentImageIndex: [0], // Image index that is currently being viewed
+                    active           : [false]
+                }); */
 
         // Create the selected product form
         this.pageForm = this._formBuilder.group({
-            title             : [''],
-            bannerImage       : [''],
-            slug              : [''],
-            content          : this._formBuilder.array([]),
-            identifier       : ['']
+            title: [''],
+            bannerImage: [''],
+            slug: [''],
+            content: this._formBuilder.array([]),
+            identifier: ['']
         });
 
         // Get the pagination
@@ -153,37 +160,35 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
             });
 
         // Get the teams
-     ////   console.log('the page');
-      //  console.log(this._pageService.pages$);
+        ////   console.log('the page');
+        //  console.log(this._pageService.pages$);
         this.pages$ = this._pageService.pages$;
         // Subscribe to search input field value changes
-   /*     this.searchInputControl.valueChanges
-            .pipe(
-                takeUntil(this._unsubscribeAll),
-                debounceTime(300),
-                switchMap((query) => {
-                    this.closeDetails();
-                    this.isLoading = true;
-                    return this._pageService.getPages(0, 10, 'name', 'asc', query);
-                }),
-                map(() => {
-                    this.isLoading = false;
-                })
-            )
-            .subscribe(); */
+        /*     this.searchInputControl.valueChanges
+                 .pipe(
+                     takeUntil(this._unsubscribeAll),
+                     debounceTime(300),
+                     switchMap((query) => {
+                         this.closeDetails();
+                         this.isLoading = true;
+                         return this._pageService.getPages(0, 10, 'name', 'asc', query);
+                     }),
+                     map(() => {
+                         this.isLoading = false;
+                     })
+                 )
+                 .subscribe(); */
     }
 
     /**
      * After view init
      */
-    ngAfterContentInit(): void
-    {
-        if ( this._sort && this._paginator )
-        {
+    ngAfterContentInit(): void {
+        if (this._sort && this._paginator) {
             // Set the initial sort
             this._sort.sort({
-                id          : 'name',
-                start       : 'asc',
+                id: 'name',
+                start: 'asc',
                 disableClear: true
             });
 
@@ -219,12 +224,11 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     /**
      * Add an empty phone number field
      */
-    addContentAndImage(): void
-    {
+    addContentAndImage(): void {
         // Create an empty phone number form group
         const phoneNumberFormGroup = this._formBuilder.group({
-            content    : [''],
-            image      : ['']
+            content: [''],
+            image: ['']
         });
 
         // Add the phone number form group to the phoneNumbers form array
@@ -237,8 +241,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     /**
      * On destroy
      */
-    ngOnDestroy(): void
-    {
+    ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
@@ -253,11 +256,9 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
      *
      * @param pageId
      */
-    showStatus(pageId: string): void
-    {
+    showStatus(pageId: string): void {
         // If the product is already selected...
-        if ( this.selectedPage && this.selectedPage.identifier === pageId )
-        {
+        if (this.selectedPage && this.selectedPage.identifier === pageId) {
             // Close the details
             this.closeDetails();
             return;
@@ -270,34 +271,34 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
                 this.selectedPage = page;
 
 
-/*                if (page.bannerImage) {
-                    this.bannerImage = this._imageService.loadImage240x128(page.bannerImage);
-                    console.log('the banner image');
-                    console.log(this.bannerImage);
-                //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
-                }
+                /*                if (page.bannerImage) {
+                                    this.bannerImage = this._imageService.loadImage240x128(page.bannerImage);
+                                    console.log('the banner image');
+                                    console.log(this.bannerImage);
+                                //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
+                                }
 
-                if (page.aboutImage) {
-                    this.aboutImage = this._imageService.loadImage240x128(page.aboutImage);
-                    console.log('the about image');
-                    console.log(this.aboutImage);
-                    //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
-                }
+                                if (page.aboutImage) {
+                                    this.aboutImage = this._imageService.loadImage240x128(page.aboutImage);
+                                    console.log('the about image');
+                                    console.log(this.aboutImage);
+                                    //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
+                                }
 
-                if (page.contentImage) {
-                    this.contentImage = this._imageService.loadImage240x128(page.contentImage);
-                    console.log('the content image');
-                    console.log(this.contentImage);
-                    //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
-                } */
+                                if (page.contentImage) {
+                                    this.contentImage = this._imageService.loadImage240x128(page.contentImage);
+                                    console.log('the content image');
+                                    console.log(this.contentImage);
+                                    //    this.whoWeAreImageDesktop = this._imageService.loadImage240x128('who-we-are-home-nov20.jpeg');
+                                } */
                 // Fill the form
                 this.pageForm.patchValue(page);
 
-          //      page.content = JSON.parse(page['content);
+                //      page.content = JSON.parse(page['content);
                 const contentFormGroups = [];
                 // Iterate through them
 
-                if ( page.content.length > 0 ) {
+                if (page.content.length > 0) {
 
                     page.content.forEach((content) => {
 
@@ -315,21 +316,21 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
                     contentFormGroups.push(
                         this._formBuilder.group({
                             content: [''],
-                            image:   ['']
+                            image: ['']
                         })
                     );
                 }
 
-                  contentFormGroups.forEach((contentFormGroup) => {
+                contentFormGroups.forEach((contentFormGroup) => {
                     (this.pageForm.get('content') as UntypedFormArray).push(contentFormGroup);
-                    });
+                });
 
 
-  //              console.log(page);
+                //              console.log(page);
 
 
 //                console.log('the page form');
-          //      console.log(this.pageForm.get('content')['controls'][0].get('line').value);
+                //      console.log(this.pageForm.get('content')['controls'][0].get('line').value);
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
@@ -338,8 +339,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     /**
      * Close the details
      */
-    closeDetails(): void
-    {
+    closeDetails(): void {
         this.selectedPage = null;
     }
 
@@ -355,88 +355,95 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
         console.log(fileInput)
         console.log('the value of this');
         console.log(field);
-/*        this.imageError = null;
-        //    console.log(fileInput);
-        //  console.log('fileInput');
+        /*        this.imageError = null;
+                //    console.log(fileInput);
+                //  console.log('fileInput');
 
-        if (fileInput.target.files && fileInput.target.files[0]) {
-            // Size Filter Bytes
-            const max_size = 20971520;
-            const allowed_types = ['image/png', 'image/jpeg'];
-            const max_height = 15200;
-            const max_width = 25600;
+                if (fileInput.target.files && fileInput.target.files[0]) {
+                    // Size Filter Bytes
+                    const max_size = 20971520;
+                    const allowed_types = ['image/png', 'image/jpeg'];
+                    const max_height = 15200;
+                    const max_width = 25600;
 
-            if (fileInput.target.files[0].size > max_size) {
-                this.imageError =
-                    'Maximum size allowed is ' + max_size / 1000 + 'Mb';
-
-                return false;
-            }
-
-            if (!_.includes(allowed_types, fileInput.target.files[0].type)) {
-                this.imageError = 'Only Images are allowed ( JPG | PNG )';
-                return false;
-            }
-            const reader = new FileReader();
-
-            reader.onload = (e: any) => {
-                const image = new Image();
-                image.src = e.target.result;
-                image.onload = rs => {
-                    const img_height = rs.currentTarget['height'];
-                    const img_width = rs.currentTarget['width'];
-
-                    //  console.log(img_height, img_width);
-
-
-                    if (img_height > max_height && img_width > max_width) {
+                    if (fileInput.target.files[0].size > max_size) {
                         this.imageError =
-                            'Maximum dimentions allowed ' +
-                            max_height +
-                            '*' +
-                            max_width +
-                            'px';
+                            'Maximum size allowed is ' + max_size / 1000 + 'Mb';
+
                         return false;
-                    } else {
-                        const imgBase64Path = e.target.result;
-                        this.cardImageBase64 = e.target.result;
-                        this.isImageSaved = true;
-                        // this.previewImagePath = imgBase64Path;
                     }
-                };
-                this.imageArray[field]  = reader.result;
 
-                console.log('the form');
-                console.log(this.pageForm);
-                console.log(JSON.parse(`{"${field}":"${reader.result}"}`));
-                this.pageForm.patchValue(JSON.parse(`{"${field}":"${reader.result}"}`));
-                this.pageForm.get(field).updateValueAndValidity();
-                /*
-                  if (result.replace('image/png', '')) {
+                    if (!_.includes(allowed_types, fileInput.target.files[0].type)) {
+                        this.imageError = 'Only Images are allowed ( JPG | PNG )';
+                        return false;
+                    }
+                    const reader = new FileReader();
 
-                  } */
-                //    document.getElementById('avatar').setAttribute('style', `background: url('${reader.result}') no-repeat;`);
-                //  document.getElementById('avatar-file-input').setAttribute('value', JSON.stringify(reader.result));
-          //  };
+                    reader.onload = (e: any) => {
+                        const image = new Image();
+                        image.src = e.target.result;
+                        image.onload = rs => {
+                            const img_height = rs.currentTarget['height'];
+                            const img_width = rs.currentTarget['width'];
 
-          //  reader.readAsDataURL(fileInput.target.files[0]);
-      //  }
+                            //  console.log(img_height, img_width);
+
+
+                            if (img_height > max_height && img_width > max_width) {
+                                this.imageError =
+                                    'Maximum dimentions allowed ' +
+                                    max_height +
+                                    '*' +
+                                    max_width +
+                                    'px';
+                                return false;
+                            } else {
+                                const imgBase64Path = e.target.result;
+                                this.cardImageBase64 = e.target.result;
+                                this.isImageSaved = true;
+                                // this.previewImagePath = imgBase64Path;
+                            }
+                        };
+                        this.imageArray[field]  = reader.result;
+
+                        console.log('the form');
+                        console.log(this.pageForm);
+                        console.log(JSON.parse(`{"${field}":"${reader.result}"}`));
+                        this.pageForm.patchValue(JSON.parse(`{"${field}":"${reader.result}"}`));
+                        this.pageForm.get(field).updateValueAndValidity();
+                        /*
+                          if (result.replace('image/png', '')) {
+
+                          } */
+        //    document.getElementById('avatar').setAttribute('style', `background: url('${reader.result}') no-repeat;`);
+        //  document.getElementById('avatar-file-input').setAttribute('value', JSON.stringify(reader.result));
+        //  };
+
+        //  reader.readAsDataURL(fileInput.target.files[0]);
+        //  }
     }
 
 
     /**
      * Toggle the tags edit mode
      */
-    toggleTagsEditMode(): void
-    {
+    toggleTagsEditMode(): void {
         this.tagsEditMode = !this.tagsEditMode;
+    }
+
+    deployToProductiom(): void {
+        // Deploy to Production
+        this._pageService.deployToProductiom();
+
+        // Show a success message
+        this.showFlashMessage('success');
+
     }
 
     /**
      * Create product
      */
-    createPage(): void
-    {
+    createPage(): void {
         // Create the product
         this._pageService.createPage().subscribe((newPage) => {
 
@@ -454,8 +461,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     /**
      * Update the selected product using the form data
      */
-    updatePage(): void
-    {
+    updatePage(): void {
         // Get the product object
         const page = this.pageForm.getRawValue();
 
@@ -473,11 +479,10 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     /**
      * Delete the selected product using the form data
      */
-    deleteSelectedProduct(): void
-    {
+    deleteSelectedProduct(): void {
         // Open the confirmation dialog
         const confirmation = this._fuseConfirmationService.open({
-            title  : 'Delete product',
+            title: 'Delete product',
             message: 'Are you sure you want to remove this product? This action cannot be undone!',
             actions: {
                 confirm: {
@@ -490,8 +495,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
         confirmation.afterClosed().subscribe((result) => {
 
             // If the confirm button pressed...
-            if ( result === 'confirmed' )
-            {
+            if (result === 'confirmed') {
 
                 // Get the product object
                 const product = this.pageForm.getRawValue();
@@ -509,8 +513,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     /**
      * Show flash message
      */
-    showFlashMessage(type: 'success' | 'error'): void
-    {
+    showFlashMessage(type: 'success' | 'error'): void {
         // Show the message
         this.flashMessage = type;
 
@@ -533,8 +536,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
      * @param index
      * @param item
      */
-    trackByFn(index: number, item: any): any
-    {
+    trackByFn(index: number, item: any): any {
         return item.id || index;
     }
 }

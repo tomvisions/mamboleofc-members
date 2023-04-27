@@ -132,6 +132,13 @@ export class PageService
         );
     }
 
+
+    deployToProductiom() {
+        this._httpClient.post(`${this._sharedModule.apiLocation}/api/v1/deploy`, {
+            "section":"page"
+        });
+        //return this.pages$.pipe(
+    }
     /**
      * Update Event
      *
@@ -151,19 +158,19 @@ export class PageService
                 identifier,
                 page
             }).pipe(
-                map((updatedTeam) => {
+                map((updatedPage) => {
 
                     // Find the index of the updated product
                     const index = pages.findIndex(item => item.identifier === identifier);
 
                     // Update the product
-                    pages[index] = updatedTeam;
+                    pages[index] = updatedPage['data'];
 
                     // Update the products
                     this._pages.next(pages);
 
                     // Return the updated product
-                    return updatedTeam;
+                    return updatedPage;
                 }),
                 switchMap(updatedTeam => this.page$.pipe(
                     take(1),
