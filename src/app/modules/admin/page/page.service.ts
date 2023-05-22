@@ -92,7 +92,6 @@ export class PageService
     getPages(page: number = 0, size: number = 10, sort: string = 'identifier', order: 'asc' | 'desc' | '' = 'asc', search: string = ''):
         Observable<{ pagination: PagePagination; pages: Page[] }>
     {
-
         return this._httpClient.get<{ pagination: PagePagination; pages: Page[] }>(`${this._sharedModule.apiLocation}/api/v1/page`, {
             params: {
                 page: '' + page,
@@ -103,6 +102,7 @@ export class PageService
             }
         }).pipe(
             tap((response) => {
+
                 this._pagination.next(response.pagination);
                 this._pages.next(response.pages);
             })

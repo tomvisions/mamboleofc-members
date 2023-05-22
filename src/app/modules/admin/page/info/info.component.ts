@@ -258,19 +258,17 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy {
      * @param pageId
      */
     showStatus(pageId: string): void {
-        console.log('the page id');
-        console.log(pageId);
         // If the product is already selected...
         if (this.selectedPage && this.selectedPage.identifier === pageId) {
             // Close the details
+            (this.pageForm.get('content') as UntypedFormArray).clear();
             this.closeDetails();
+
             return;
         }
         // Get the product by id
         this._pageService.getPageId(pageId)
             .subscribe((page) => {
-                console.log('the page');
-                console.log(page);
                 // Set the selected product
                 this.selectedPage = page;
 
@@ -301,8 +299,6 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy {
                 //      page.content = JSON.parse(page['content);
                 const contentFormGroups = [];
                 // Iterate through them
-                console.log('the content');
-                console.log(this.pageForm.get('content'));
                 if (page.content.length > 0) {
 
                     page.content.forEach((content) => {
