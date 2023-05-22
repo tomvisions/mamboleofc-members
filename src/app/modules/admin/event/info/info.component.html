@@ -1,14 +1,15 @@
 <div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
 
     <!-- Header -->
-    <div class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+    <div
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
         <!-- Loader -->
         <div
             class="absolute inset-x-0 bottom-0"
             *ngIf="isLoading">
             <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
         </div>
-        <!-- Title -->
+        <!-- title -->
         <div class="text-4xl font-extrabold tracking-tight">Events</div>
 
         <!-- Actions -->
@@ -64,7 +65,8 @@
                                 </div>
                                 <div class="grid">
                                     <ng-container *ngIf="selectedEvent?.identifier === event.identifier">
-                                        <ng-container *ngTemplateOutlet="rowStatusTemplate; context: {$implicit: event}"></ng-container>
+                                        <ng-container
+                                            *ngTemplateOutlet="rowStatusTemplate; context: {$implicit: event}"></ng-container>
                                     </ng-container>
                                 </div>
                             </ng-container>
@@ -101,10 +103,10 @@
 
                                         <!-- Name -->
 
-                                            <input
-                                                hidden
-                                                [formControlName]="'identifier'">
-                                            <mat-label>Name</mat-label>
+                                        <input
+                                            hidden
+                                            [formControlName]="'identifier'">
+                                        <mat-label>Name</mat-label>
                                         <mat-form-field class="w-full">
                                             <input
                                                 matInput
@@ -115,14 +117,15 @@
                                         <div class="flex">
 
                                             <mat-label>Intro</mat-label>
-                                            <editor apiKey="cj6ml6v91591y201ycsikxncalmcr4l77ryq3mdxov7i2ywt" [formControlName]="'intro'"
+                                            <editor apiKey="cj6ml6v91591y201ycsikxncalmcr4l77ryq3mdxov7i2ywt"
+                                                    [formControlName]="'intro'"
                                                     [init]="{
                                              height: 500,
-                                             menubar: false,
+                                             menubar: true,
                                              plugins:
                                              'link',
                                              toolbar:
-                                               'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent link | removeformat | help'
+                                               'undo redo | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent link | removeformat | help'
                                            }"
                                             ></editor>
 
@@ -132,15 +135,17 @@
                                         <div class="flex">
 
                                             <mat-label>Content</mat-label>
-                                            <editor apiKey="cj6ml6v91591y201ycsikxncalmcr4l77ryq3mdxov7i2ywt" [formControlName]="'content'"
+                                            <editor apiKey="cj6ml6v91591y201ycsikxncalmcr4l77ryq3mdxov7i2ywt"
+                                                    [formControlName]="'content'"
                                                     [init]="{
                                              height: 500,
-                                             menubar: false,
+                                             menubar: true,
                                              plugins:
                                              'link',
-
+                                             font_formats: 'Poppins=poppins; Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats',
+                                             fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 18pt 20pt 22pt 24pt 26pt 28pt 36pt 48pt 72pt',
                                              toolbar:
-                                               'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent link | removeformat | help'
+                                               'undo redo | fontsizeselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent link | removeformat | help'
                                            }"
                                             ></editor>
 
@@ -149,15 +154,17 @@
                                         <div class="flex">
 
                                             <mat-label>About</mat-label>
-                                            <editor apiKey="cj6ml6v91591y201ycsikxncalmcr4l77ryq3mdxov7i2ywt" [formControlName]="'about'"
+                                            <editor apiKey="cj6ml6v91591y201ycsikxncalmcr4l77ryq3mdxov7i2ywt"
+                                                    [formControlName]="'about'"
                                                     [init]="{
                                              height: 500,
-                                             menubar: false,
+                                             menubar: true,
                                             plugins:
                                              'link',
-
+                                            font_formats: 'Poppins=poppins; Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats',
+                                            fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 18pt 20pt 22pt 24pt 26pt 28pt 36pt 48pt 72pt',
                                              toolbar:
-                                               'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent link | removeformat | help'
+                                               'undo redo | fontsizeselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent link | removeformat |  styleselect | help'
                                            }"
                                             ></editor>
 
@@ -171,7 +178,8 @@
                             <div class="flex flex-col sm:flex-row p-8">
                                 <div class="relative flex items-center justify-center w-60 h-32 ring-4 ring-bg-card">
                                     <!-- Upload / Remove avatar -->
-                                    <div id="bannerImage" class="absolute inset-0 bg-black bg-opacity-50 z-10" *ngIf = "this.bannerImage !== '' else defaultImage" >
+                                    <div id="bannerImage" class="absolute inset-0 bg-black bg-opacity-50 z-10"
+                                         *ngIf="this.bannerImage !== '' else defaultImage">
                                         <img [src]="this.bannerImage">
                                     </div>
                                     <ng-template #defaultImage>
@@ -224,7 +232,8 @@
                             <div class="flex flex-col sm:flex-row p-8">
                                 <div class="relative flex items-center justify-center w-60 h-32 ring-4 ring-bg-card">
                                     <!-- Upload / Remove avatar -->
-                                    <div id="aboutImage" class="absolute inset-0 bg-black bg-opacity-50 z-10" *ngIf = "this.aboutImage !== '' else defaultImage" >
+                                    <div id="aboutImage" class="absolute inset-0 bg-black bg-opacity-50 z-10"
+                                         *ngIf="this.aboutImage !== '' else defaultImage">
                                         <img [src]="this.aboutImage">
                                     </div>
                                     <ng-template #defaultImage>
@@ -276,7 +285,8 @@
                             <div class="flex flex-col sm:flex-row p-8">
                                 <div class="relative flex items-center justify-center w-60 h-32 ring-4 ring-bg-card">
                                     <!-- Upload / Remove avatar -->
-                                    <div id="contentImage" class="absolute inset-0 bg-black bg-opacity-50 z-10" *ngIf = "this.contentImage !== '' else defaultImage" >
+                                    <div id="contentImage" class="absolute inset-0 bg-black bg-opacity-50 z-10"
+                                         *ngIf="this.contentImage !== '' else defaultImage">
                                         <img [src]="this.contentImage">
                                     </div>
                                     <ng-template #defaultImage>
@@ -328,39 +338,39 @@
 
 
                             <div class="flex flex-col sm:flex-row p-8">
-                            <div class="flex items-center justify-between w-full border-t px-8 py-4">
-                                <button
-                                    class="-ml-4"
-                                    mat-button
-                                    [color]="'warn'"
-                                    (click)="deleteSelectedProduct()">
-                                    Delete
-                                </button>
-                                <div class="flex items-center">
-                                    <div
-                                        class="flex items-center mr-4"
-                                        *ngIf="flashMessage">
-                                        <ng-container *ngIf="flashMessage === 'success'">
-                                            <mat-icon
-                                                class="text-green-500"
-                                                [svgIcon]="'heroicons_outline:check'"></mat-icon>
-                                            <span class="ml-2">Product updated</span>
-                                        </ng-container>
-                                        <ng-container *ngIf="flashMessage === 'error'">
-                                            <mat-icon
-                                                class="text-red-500"
-                                                [svgIcon]="'heroicons_outline:x'"></mat-icon>
-                                            <span class="ml-2">An error occurred, try again!</span>
-                                        </ng-container>
-                                    </div>
+                                <div class="flex items-center justify-between w-full border-t px-8 py-4">
                                     <button
-                                        mat-flat-button
-                                        [color]="'primary'"
-                                        (click)="updateSelectedEvent()">
-                                        Update
+                                        class="-ml-4"
+                                        mat-button
+                                        [color]="'warn'"
+                                        (click)="deleteSelectedProduct()">
+                                        Delete
                                     </button>
+                                    <div class="flex items-center">
+                                        <div
+                                            class="flex items-center mr-4"
+                                            *ngIf="flashMessage">
+                                            <ng-container *ngIf="flashMessage === 'success'">
+                                                <mat-icon
+                                                    class="text-green-500"
+                                                    [svgIcon]="'heroicons_outline:check'"></mat-icon>
+                                                <span class="ml-2">Product updated</span>
+                                            </ng-container>
+                                            <ng-container *ngIf="flashMessage === 'error'">
+                                                <mat-icon
+                                                    class="text-red-500"
+                                                    [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                                                <span class="ml-2">An error occurred, try again!</span>
+                                            </ng-container>
+                                        </div>
+                                        <button
+                                            mat-flat-button
+                                            [color]="'primary'"
+                                            (click)="updateSelectedEvent()">
+                                            Update
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
                             </div>
                         </form>
                     </div>
