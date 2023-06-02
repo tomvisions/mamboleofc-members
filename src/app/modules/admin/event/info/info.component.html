@@ -81,6 +81,17 @@
                         [pageSize]="pagination.size"
                         [pageSizeOptions]="[5, 10, 25, 100]"
                         [showFirstLastButtons]="true"></mat-paginator>
+                    <!-- Actions -->
+                    <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+
+                        <!-- Add product button -->
+                        <button
+                            class="ml-4"
+                            mat-flat-button
+                            (click)="deployToProductiom()">
+                            <span class="ml-2 mr-1">Deploy To Production</span>
+                        </button>
+                    </div>
 
                 </ng-container>
             </ng-container>

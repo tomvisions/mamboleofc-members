@@ -15,6 +15,7 @@ import {
 } from 'app/modules/admin/event/event.types';
 import { EventService } from 'app/modules/admin/event/event.service';
 import * as _ from "lodash";
+import {PageService} from "../../page/page.service";
 
 @Component({
     selector       : 'event-gallery',
@@ -431,6 +432,15 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
             // Show a success message
             this.showFlashMessage('success');
         });
+    }
+
+    deployToProductiom(): void {
+        // Deploy to Production
+        this._eventService.deployToProductiom();
+
+        // Show a success message
+        this.showFlashMessage('success');
+
     }
 
     /**

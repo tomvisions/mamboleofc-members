@@ -79,6 +79,15 @@ export class EventService
         );
     }
 
+
+    deployToProductiom() {
+        this._httpClient.post(`${this._sharedModule.apiLocation}/api/v1/deploy`, {
+            "section":"event"
+        });
+        //return this.pages$.pipe(
+    }
+
+
     /**
      * Get products
      *
