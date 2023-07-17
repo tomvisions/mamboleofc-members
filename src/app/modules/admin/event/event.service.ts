@@ -81,6 +81,8 @@ export class EventService
 
 
     deployToProductiom() {
+        console.log('the location');
+        console.log(`${this._sharedModule.apiLocation}/api/v1/deploy`);
         this._httpClient.post(`${this._sharedModule.apiLocation}/api/v1/deploy`, {
             "section":"event"
         });

@@ -66,17 +66,6 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
     imageError: string;
     isImageSaved: boolean = false;
     cardImageBase64: string;
-    g
-
-    quillModules: any = {
-        toolbar: [
-            ['bold', 'italic', 'underline',  'strike','link'], ['blockquote', 'code-block'],
-            [{align: []}, {list: 'ordered'}, {list: 'bullet'}],
-            [{ 'size': ['small', false, 'large', 'huge'] }],
-            [{ 'font': [] }],
-            ['clean']
-        ]
-    };
 
     /**
      * Constructor
@@ -136,6 +125,7 @@ export class InfoComponent implements OnInit, AfterContentInit, OnDestroy
             bannerImage      : [''],
             contentImage      : [''],
             link             : [''],
+            linkName         : [''],
             linkImage        : [''],
             identifier       : [''],
             intro            : [''],
