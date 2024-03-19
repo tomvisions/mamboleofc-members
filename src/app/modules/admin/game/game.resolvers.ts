@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
 import { GameService } from 'app/modules/admin/game/game.service';
 import { GamePagination, Game } from 'app/modules/admin/game/game.types';
@@ -7,7 +7,7 @@ import { GamePagination, Game } from 'app/modules/admin/game/game.types';
 @Injectable({
     providedIn: 'root'
 })
-export class GameResolver implements Resolve<any>
+export class GameResolver 
 {
     /**
      * Constructor
@@ -55,7 +55,7 @@ export class GameResolver implements Resolve<any>
 @Injectable({
     providedIn: 'root'
 })
-export class GamesResolver implements Resolve<any>
+export class GamesResolver 
 {
     /**
      * Constructor

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
 import { TeamService } from 'app/modules/admin/team/team.service';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, TeamPagination, InventoryTag, InventoryVendor, Team } from 'app/modules/admin/team/team.types';
@@ -9,7 +9,7 @@ import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduc
     providedIn: 'root'
 })
 
-export class TeamResolver implements Resolve<any>
+export class TeamResolver 
 {
     /**
      * Constructor
@@ -38,7 +38,7 @@ export class TeamResolver implements Resolve<any>
     providedIn: 'root'
 })
 
-export class TeamsResolver implements Resolve<any>
+export class TeamsResolver 
 {
     /**
      * Constructor

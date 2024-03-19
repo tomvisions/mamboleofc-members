@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
 import { UserService } from 'app/modules/admin/user/user.service';
 import { UserPagination, User } from 'app/modules/admin/user/user.types';
@@ -7,7 +7,7 @@ import { UserPagination, User } from 'app/modules/admin/user/user.types';
 @Injectable({
     providedIn: 'root'
 })
-export class UserResolver implements Resolve<any>
+export class UserResolver 
 {
     /**
      * Constructor
@@ -55,7 +55,7 @@ export class UserResolver implements Resolve<any>
 @Injectable({
     providedIn: 'root'
 })
-export class UsersResolver implements Resolve<any>
+export class UsersResolver 
 {
     /**
      * Constructor
