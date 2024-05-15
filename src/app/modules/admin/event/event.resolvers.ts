@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { catchError, Observable, throwError } from 'rxjs';
 import { EventService } from 'app/modules/admin/event/event.service';
 import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduct, EventPagination, InventoryTag, InventoryVendor, Event } from 'app/modules/admin/event/event.types';
@@ -9,7 +9,7 @@ import { InventoryBrand, InventoryCategory, InventoryPagination, InventoryProduc
     providedIn: 'root'
 })
 
-export class EventResolver implements Resolve<any>
+export class EventResolver 
 {
     /**
      * Constructor
@@ -38,7 +38,7 @@ export class EventResolver implements Resolve<any>
     providedIn: 'root'
 })
 
-export class EventsResolver implements Resolve<any>
+export class EventsResolver 
 {
     /**
      * Constructor
