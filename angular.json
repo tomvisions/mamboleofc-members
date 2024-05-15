@@ -100,13 +100,13 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "mamboleofc-members:build:production"
+                          "buildTarget": "mamboleofc-members:build:production"
                         },
                         "development": {
-                            "browserTarget": "mamboleofc-members:build:development"
+                          "buildTarget": "mamboleofc-members:build:development"
                         },
                         "stage": {
-                            "browserTarget": "mamboleofc-members:build:stage"
+                          "buildTarget": "mamboleofc-members:build:stage"
                         }
                     },
                     "defaultConfiguration": "development",
@@ -117,7 +117,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "mamboleofc-members:build"
+                      "buildTarget": "mamboleofc-members:build"
                     }
                 },
                 "test": {
